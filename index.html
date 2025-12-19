@@ -4,11 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Karigar | Hyperlocal Services</title>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.5.10/css/pico.min.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
 
   <body>
-    <div id="root"></div>
-
-   
+    <header class="container">
+      <nav class="navbar">
+        <ul>
+          <li><a class="brand" href="#/">Karigar</a></li>
+        </ul>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <ul id="nav-actions" class="nav-menu"></ul>
+      </nav>
+    </header>
+    <main class="container" id="root"></main>
+    <footer class="container">
+      <small class="muted">© Karigar — Hyperlocal Services Marketplace</small>
+    </footer>
+    <dialog id="modal"></dialog>
+    <script type="module" src="./assets/js/app.js"></script>
   </body>
 </html>
