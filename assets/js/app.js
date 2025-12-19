@@ -102,9 +102,7 @@ function renderNav(){
       <li><a href="#/register" role="button">Create account</a></li>
     `
   } else {
-    const u = sessionUser()
     nav.innerHTML = `
-      <li class="muted">${u.name}</li>
       <li><a href="#/">Home</a></li>
       <li><a href="#/dashboard">Dashboard</a></li>
       <li><a href="#/search">Search</a></li>
@@ -127,29 +125,52 @@ function route(){
 }
 function renderHome(){
   const u = sessionUser()
+  const avgRating = (state.providers.length? (state.providers.reduce((a,b)=>a+(b.rating||0),0)/state.providers.length).toFixed(2):'0.0')
   $('#root').innerHTML = `
-    <section>
-      <hgroup>
-        <h1>Find trusted local services</h1>
-        <p class="muted">Search nearby providers by category and city</p>
-      </hgroup>
-      <div class="toolbar">
-        <select id="home-category">${state.categories.map(c=>`<option>${c}</option>`).join('')}</select>
-        <select id="home-city">${state.cities.map(c=>`<option>${c}</option>`).join('')}</select>
-        <button id="home-search">Search</button>
+    <section class="hero">
+      <div class="hero-inner">
+        <h1>Find trusted local pros, fast</h1>
+        <p class="muted">A sleek hyperlocal marketplace connecting you to nearby services</p>
+        <div class="hero-cta">
+          <a href="#/search" role="button" class="cta-primary">Browse providers</a>
+          ${u?`<a href="#/dashboard" role="button" class="cta-outline">Go to dashboard</a>`:`<a href="#/register" role="button" class="cta-outline">Get started</a>`}
+        </div>
+        <div class="toolbar hero-search">
+          <select id="home-category">${state.categories.map(c=>`<option>${c}</option>`).join('')}</select>
+          <select id="home-city">${state.cities.map(c=>`<option>${c}</option>`).join('')}</select>
+          <button id="home-search">Search</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><small class="muted">Providers</small><strong>${state.providers.length}</strong></div>
+          <div class="stat"><small class="muted">Requests</small><strong>${state.requests.length}</strong></div>
+          <div class="stat"><small class="muted">Avg Rating</small><strong>${avgRating}</strong></div>
+        </div>
       </div>
-      <div id="home-results" class="grid-3" style="margin-top:1rem"></div>
+    </section>
+    <section class="feature-grid">
+      <article class="feature-card">
+        <div class="feature-icon">🔧</div>
+        <h3>Skilled pros</h3>
+        <p class="muted">Plumbers, electricians, cleaners, tutors and more.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">📍</div>
+        <h3>Hyperlocal</h3>
+        <p class="muted">Filter by city and category to find nearby services.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Fast requests</h3>
+        <p class="muted">Send a request and track status in one place.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <h3>Trusted reviews</h3>
+        <p class="muted">Rate completed jobs to help others choose confidently.</p>
+      </article>
     </section>
     <section>
-      <article class="card">
-        <h3>How it works</h3>
-        <ul>
-          <li>Browse providers by category and location</li>
-          <li>View profiles, pricing, and availability</li>
-          <li>Send a request and track status</li>
-        </ul>
-        ${u?`<a href="#/dashboard" role="button">Go to dashboard</a>`:`<a href="#/register" role="button">Create account</a>`}
-      </article>
+      <div id="home-results" class="grid-3" style="margin-top:1rem"></div>
     </section>
   `
   $('#home-search').onclick = ()=>{
