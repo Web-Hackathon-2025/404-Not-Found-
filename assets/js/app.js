@@ -11,6 +11,13 @@ const state = {
 }
 const roles = { customer:'customer', provider:'provider', admin:'admin' }
 const statuses = ['requested','confirmed','completed','cancelled']
+function icon(name){
+  if(name==='location') return `<span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" fill="currentColor"/></svg></span>`
+  if(name==='price') return `<span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M7 8c0-3 10-3 10 0s-10 3-10 6 10 3 10 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>`
+  if(name==='clock') return `<span class="icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>`
+  if(name==='spark') return `<span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2Z" stroke="currentColor" stroke-width="2"/></svg></span>`
+  return `<span class="icon">⭐</span>`
+}
 init()
 function init(){
   load()
@@ -145,6 +152,12 @@ function renderHome(){
           <div class="stat"><small class="muted">Requests</small><strong>${state.requests.length}</strong></div>
           <div class="stat"><small class="muted">Avg Rating</small><strong>${avgRating}</strong></div>
         </div>
+        <div class="popular-grid">
+          ${state.categories.slice(0,6).map(c=>`
+            <div class="category-card" data-cat="${c}">
+              ${icon('spark')} <strong>${c}</strong>
+            </div>`).join('')}
+        </div>
       </div>
     </section>
     <section class="feature-grid">
@@ -164,15 +177,27 @@ function renderHome(){
         <p class="muted">Send a request and track status in one place.</p>
       </article>
       <article class="feature-card">
-        <div class="feature-icon">⭐</div>
+        <div class="feature-icon">🛡️</div>
         <h3>Trusted reviews</h3>
         <p class="muted">Rate completed jobs to help others choose confidently.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Direct messaging</h3>
+        <p class="muted">Coordinate details quickly with providers (coming soon).</p>
       </article>
     </section>
     <section>
       <div id="home-results" class="grid-3" style="margin-top:1rem"></div>
     </section>
   `
+  $$('.category-card').forEach(el=>{
+    el.onclick = ()=>{
+      const c = el.dataset.cat
+      $('#home-category').value = c
+      $('#home-search').click()
+    }
+  })
   $('#home-search').onclick = ()=>{
     const c = $('#home-category').value
     const city = $('#home-city').value
@@ -182,9 +207,9 @@ function renderHome(){
       const user = state.users.find(u=>u.id===p.id)
       return `<article class="card">
           <h3>${user.name}</h3>
-          <p class="muted">${p.city}</p>
+          <p class="muted">${icon('location')} ${p.city}</p>
           <div>${p.categories.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
-          <p>PKR ${p.pricing}</p>
+          <p>${icon('price')} PKR ${p.pricing} • ${icon('clock')} ${p.availability}</p>
           <footer class="toolbar">
             <a href="#/provider/${p.id}">View profile</a>
             ${state.session && state.session.role===roles.customer?`<button data-id="${p.id}" class="request">Request</button>`:''}
@@ -356,7 +381,7 @@ function renderSearch(){
       const user = state.users.find(u=>u.id===p.id)
       return `<article class="card">
           <h3>${user.name}</h3>
-          <p class="muted">${p.city} • Rating ${p.rating}</p>
+          <p class="muted">${icon('location')} ${p.city} • ⭐ ${p.rating}</p>
           <div>${p.categories.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
           <footer class="toolbar">
             <a href="#/provider/${p.id}">View profile</a>
